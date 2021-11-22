@@ -21,7 +21,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
 gpus = tf.config.list_physical_devices('GPU')
 tf.config.set_visible_devices(gpus[0], 'GPU')
 tf.config.experimental.set_memory_growth(gpus[0], True)
-
+    
 tab = '/storage/shared/apollo/same-day/tabular_data.csv'
 df_tab = pd.read_csv(tab)
 df_tab = df_tab.dropna(subset=['CO'])

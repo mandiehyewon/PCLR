@@ -1,9 +1,8 @@
 # PCLR (Patient Contrastive Learning of Representations)
 
+This repository is for the finetuning of PCLR pretrained model; as the model has built using Keras, so this repository uses Keras to finetune the model. 
 PCLR is a pre-training strategy that yields a neural network that extracts representations of ECGs.
 The representations are designed to be used in linear models without finetuning the network.
-The paper is available in PLOS comp bio [here](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009862).
-The pre-print is available [here](https://arxiv.org/abs/2104.04569).
 This readme shows how to load a model trained on over three million ECGs using PCLR.
 
 ## Requirements
@@ -39,14 +38,5 @@ ribeiro_r = ribeiro_r_model()
 and [the official implementation](https://github.com/antonior92/automatic-ecg-diagnosis) of "Automatic diagnosis of the 12-lead ECG using a deep neural network",
 Ribeiro et al 2020.
 
-## Lead I PCLR
-We also provide a PCLR model using only lead I of the ECG at [PCLR_lead_I.h5](./PCLR_lead_I.h5).
-It was trained with the same settings as the full 12-lead model except
-the model only takes lead I of the ECG as input.
-
-## Lead II PCLR
-[Lead II PCLR](./PCLR_lead_II.h5) is like lead I PCLR except it was trained with all ECGs sampled to 250Hz.
-
-## Alternative save format
-The newer keras saved model format is available for the 12-lead and single lead models at [PCLR](./PCLR)
-and [PCLR_lead_I](./PCLR_lead_I) and [PCLR_lead_II](./PCLR_lead_II).
+## PCLR model weight
+PCLR model trained with three million ECGs [PCLR.h5](./PCLR.h5) and three million ECGs without [PCLR_wo_apollo.h5](./PCLR_wo_apollo.h5).

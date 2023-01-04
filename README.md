@@ -3,7 +3,7 @@
 This repository is for the finetuning of PCLR pretrained model; as the model has built using Keras, so this repository uses Keras to finetune the model. 
 PCLR is a pre-training strategy that yields a neural network that extracts representations of ECGs.
 The representations are designed to be used in linear models without finetuning the network.
-This readme shows how to load a model trained on over three million ECGs using PCLR.
+This readme shows how to load a model trained on over three million ECGs using PCLR, which has retrieved from the [official PCLR github repository](https://github.com/broadinstitute/ml4h/tree/master/model_zoo/PCLR)
 
 ## Requirements
 This code was tested using python 3.7.
@@ -39,4 +39,4 @@ and [the official implementation](https://github.com/antonior92/automatic-ecg-di
 Ribeiro et al 2020.
 
 ## PCLR model weight
-PCLR model trained with three million ECGs [PCLR.h5](./PCLR.h5) and three million ECGs without [PCLR_wo_apollo.h5](./PCLR_wo_apollo.h5).
+PCLR model trained with three million ECGs [PCLR.h5](./PCLR.h5) and three million ECGs not including the Apollo dataset [PCLR_wo_apollo.h5](./PCLR_wo_apollo.h5).

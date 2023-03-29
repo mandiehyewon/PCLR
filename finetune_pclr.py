@@ -74,13 +74,24 @@ def bootstrap_evaluation(test_dataset, model, batch_size, num_bootstrap_samples)
         _, test_accuracy = model.evaluate(
             resampled_test_generator, steps=len(resampled_test_dataset) // batch_size, verbose=0
         )
-
+        
         test_accuracies.append(test_accuracy)
 
     return test_accuracies
 
 # Load ECG dataset
 train_generator, val_generator, train_dataset, val_dataset, test_dataset = get_data(args, args.batch_size)
+
+
+# Manually iterate through the generator
+try:
+    for i, (inputs, labels) in enumerate(train_generator):
+        print(f"Iteration {i}: inputs shape = {inputs.shape}, labels shape = {labels.shape}")
+        if i > 10:  # Limit the number of iterations to avoid an infinite loop
+            break
+except Exception as e:
+    print(f"Error: {e}")
+
 
 model = get_model(
     embedding_dim=args.embedding_dim,

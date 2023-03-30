@@ -13,6 +13,17 @@ from tensorflow.keras.optimizers import Adam
 from ecg import ECGDataset
 from config import args
 
+from tensorflow.compat.v1 import ConfigProto
+from tensorflow.compat.v1 import InteractiveSession
+
+
+def fix_gpu():
+    config = ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = InteractiveSession(config=config)
+
+
+fix_gpu()
 
 def get_model(embedding_dim: int, hidden_dim: int, num_classes: int, dropout: float) -> Model:
     """Get PCLR embedding model and finetune it"""
@@ -20,6 +31,7 @@ def get_model(embedding_dim: int, hidden_dim: int, num_classes: int, dropout: fl
     base_model = load_model("./PCLR.h5")
     base_model.trainable = False
 
+    latent = tf.keras.Model(base_model.inputs, base_model.get_layer('embed').output)
     # Create finetune classifier model
     inputs = Input(shape=(4096, 12))
     x = base_model(inputs, training=False)
@@ -83,14 +95,30 @@ def bootstrap_evaluation(test_dataset, model, batch_size, num_bootstrap_samples)
 train_generator, val_generator, train_dataset, val_dataset, test_dataset = get_data(args, args.batch_size)
 
 
-# Manually iterate through the generator
-try:
-    for i, (inputs, labels) in enumerate(train_generator):
-        print(f"Iteration {i}: inputs shape = {inputs.shape}, labels shape = {labels.shape}")
-        if i > 10:  # Limit the number of iterations to avoid an infinite loop
-            break
-except Exception as e:
-    print(f"Error: {e}")
+# # Manually iterate through the generator
+# try:
+#     for i, (inputs, labels) in enumerate(train_generator):
+#         print(f"Iteration {i}: inputs shape = {inputs.shape}, labels shape = {labels.shape}")
+#         if i > 10:  # Limit the number of iterations to avoid an infinite loop
+#             break
+# except Exception as e:
+#     print(f"Error: {e}")
+
+# Limit GPU memory growth
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+# physical_devices = tf.config.experimental.list_physical_devices('CPU')
+print("physical_devices-------------", len(physical_devices))
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+os.environ["TF_CUDNN_DETERMINISTIC"] = "0"
+
+gpus = tf.config.list_physical_devices("GPU")
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
 
 
 model = get_model(

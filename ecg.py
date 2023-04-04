@@ -17,6 +17,30 @@ def get_data(df):
     ecgs /= 1000
     return np.transpose(ecgs, (0,2,1))
 
+def get_data(batch_size=64):
+    df_tab = pd.read_csv(os.path.join('/storage/shared/apollo/same-day/tabular_data.csv'))
+    train_ids = np.load("./stores/train_ids.npy")
+    val_ids = np.load("./stores/val_ids.npy")
+    test_ids = np.load("./stores/test_ids.npy")
+
+    train_ids = train_ids[len(train_ids) // 2 :]
+    val_ids = val_ids[len(val_ids) // 2 :]
+    test_ids = test_ids[len(test_ids) // 2 :]
+
+    train_df = df_tab[df_tab["QuantaID"].isin(train_ids)]
+    val_df = df_tab[df_tab["QuantaID"].isin(val_ids)]
+    test_df = df_tab[df_tab["QuantaID"].isin(test_ids)]
+    print(len(train_df), len(val_df), len(test_df))
+
+    X_train = get_ecg(train_df)
+    X_val = get_ecg(val_df)
+    X_test = get_ecg(test_df)
+
+    y_train = (train_df["PCWP_mean"].values >= 18).astype('float32')
+    y_val = (val_df["PCWP_mean"].values >= 18).astype('float32')
+    y_test = (test_df["PCWP_mean"].values >= 18).astype('float32')
+
+    return X_train, y_train, X_val, y_val, X_test, y_test
 
 class ECGDataset:
     def __init__(self, args, df, df_demo=None):  # , augment=False):
